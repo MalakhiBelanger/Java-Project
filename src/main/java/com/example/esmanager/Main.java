@@ -30,6 +30,7 @@ public class Main extends Application {
         BorderPane root = new BorderPane();
         BorderPane topPane = new BorderPane();
         Scene scene = new Scene(root);
+        Login loginScreen = new Login();
 
 
         stage.setTitle("ESManager");
@@ -38,8 +39,9 @@ public class Main extends Application {
         stage.show();
 
 
-        SplashLogo splashScreen = new SplashLogo(root,topPane, "placeholder.png",300);
+        SplashLogo splashScreen = new SplashLogo(root,topPane,loginScreen, "placeholder.png",300);
         splashScreen.play();
+
 
         MenuBar menu = new MenuBar();
         topPane.setBackground(new Background(new BackgroundFill(Color.AQUAMARINE,null,null)));

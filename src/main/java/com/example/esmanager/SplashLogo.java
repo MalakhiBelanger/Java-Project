@@ -13,10 +13,12 @@ public class SplashLogo {
     private final ImageView logo;
     private final BorderPane root;
     private BorderPane topPane;
+    private Login loginScreen;
 
-    public SplashLogo(BorderPane root,BorderPane topPane, String imgPath, double width) {
+    public SplashLogo(BorderPane root,BorderPane topPane, Login loginScreen, String imgPath, double width) {
         this.root = root;
         this.topPane = topPane;
+        this.loginScreen = loginScreen;
 
         logo = new ImageView(new Image(imgPath));
         logo.setFitWidth(width);
@@ -30,7 +32,7 @@ public class SplashLogo {
         root.setCenter(splashPane);
 
 
-        FadeTransition fadeIn = new FadeTransition(Duration.seconds(0.5), logo);
+        FadeTransition fadeIn = new FadeTransition(Duration.seconds(1.5), logo);
         fadeIn.setFromValue(0);
         fadeIn.setToValue(1);
 
@@ -67,6 +69,7 @@ public class SplashLogo {
             topPane.setLeft(logo);
 
             root.setTop(topPane);
+            root.setCenter(loginScreen);
 
         });
 
