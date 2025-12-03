@@ -24,13 +24,22 @@ import javafx.util.Duration;
 import java.io.IOException;
 
 public class Main extends Application {
+    public static Text title = new Text();
+
     @Override
     public void start( Stage stage) throws IOException {
+
+        title.setText("Login");
 
         BorderPane root = new BorderPane();
         BorderPane topPane = new BorderPane();
         Scene scene = new Scene(root);
         Login loginScreen = new Login();
+        loginScreen.setOnLoginSuccess(() ->{
+            Homepage homepage = new Homepage(root,loginScreen);
+            title.setText("Home");
+            root.setCenter(homepage);
+        });
 
 
         stage.setTitle("ESManager");
@@ -46,9 +55,6 @@ public class Main extends Application {
         MenuBar menu = new MenuBar();
         topPane.setBackground(new Background(new BackgroundFill(Color.AQUAMARINE,null,null)));
         topPane.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, null, null)));
-
-        Text title = new Text();
-        title.setText("Login");
 
         topPane.getChildren().addAll(title);
         title.setLayoutX(root.getWidth()/6);

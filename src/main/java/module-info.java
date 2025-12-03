@@ -7,4 +7,6 @@ module com.example.esmanager {
 
     opens com.example.esmanager to javafx.fxml;
     exports com.example.esmanager;
+    exports com.example.esmanager.Pages;
+    opens com.example.esmanager.Pages to javafx.fxml;
 }

@@ -12,6 +12,14 @@ public class Login extends BorderPane {
     private VBox loginPage;
     private VBox regPage;
 
+    private TextField loginUsername;
+    private PasswordField loginPassword;
+    private Runnable onLoginSuccess;
+
+    private TextField registerUsername;
+    private PasswordField registerPassword;
+    private Runnable onRegisterSuccess;
+
     public Login() {
         this.setBackground(new Background(new BackgroundFill(Color.GRAY, null, null)));
 
@@ -46,16 +54,20 @@ public class Login extends BorderPane {
     private void addLoginPage() {
         Label title = new Label("Login");
 
-        TextField username = new TextField();
-        username.setPromptText("Enter Username");
+        loginUsername = new TextField();
+        loginUsername.setPromptText("Enter Username");
 
-        PasswordField password = new PasswordField();
-        password.setPromptText("Enter Password");
+        loginPassword = new PasswordField();
+        loginPassword.setPromptText("Enter Password");
 
         Button submit = new Button("Login");
         submit.setPrefWidth(150);
 
-        loginPage = new VBox(title, username, password, submit);
+        submit.setOnAction(e->{
+            userLogin();
+        });
+
+        loginPage = new VBox(title, loginUsername, loginPassword, submit);
         loginPage.setAlignment(Pos.CENTER);
     }
 
@@ -74,8 +86,33 @@ public class Login extends BorderPane {
         Button submit = new Button("Create Account");
         submit.setPrefWidth(150);
 
+
+        //Submit the users info here and run a check seeing if the user already exists or not
+        submit.setOnAction(e->{
+        });
+
         regPage = new VBox(title,email,username,password,submit);
         regPage.setAlignment(Pos.CENTER);
+    }
+
+    public void setOnLoginSuccess(Runnable callback) {
+        this.onLoginSuccess = callback;
+    }
+
+    public void userLogin(){
+        String username = loginUsername.getText().trim();
+        String pass = loginPassword.getText();
+
+        if(username.equals("admin") && pass.equals("1234")){
+
+            if(onLoginSuccess != null) {
+                onLoginSuccess.run();
+            }
+        }
+    }
+
+    public void clearLogin(){
+        loginPassword.clear();
     }
 
 }
