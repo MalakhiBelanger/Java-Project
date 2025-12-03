@@ -22,6 +22,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.IOException;
+import java.sql.Connection;
 
 public class Main extends Application {
     public static Text title = new Text();
@@ -60,6 +61,8 @@ public class Main extends Application {
         title.setLayoutX(root.getWidth()/6);
         title.setLayoutY(root.getHeight()/8.5);
         title.setFont(Font.font("Arial", FontWeight.BOLD, FontPosture.REGULAR, 60));
+        UserTable admin = UserTable.getInstance();
+        admin.createUser("admin", "1234");
 
 
     }

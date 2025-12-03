@@ -102,12 +102,14 @@ public class Login extends BorderPane {
     public void userLogin(){
         String username = loginUsername.getText().trim();
         String pass = loginPassword.getText();
-
-        if(username.equals("admin") && pass.equals("1234")){
-
+        UserTable userTable = UserTable.getInstance();
+        userTable.getUser(username, pass);
+        if(userTable.getUser(username, pass) != null) {
             if(onLoginSuccess != null) {
                 onLoginSuccess.run();
             }
+        } else {
+            // Show something something username or password is incorrect here
         }
     }
 

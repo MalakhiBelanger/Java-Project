@@ -44,4 +44,11 @@ public class Database {
             System.out.println("Table " + tableName + " created");
         }
     }
+
+    public void query( String query, Connection connection) throws SQLException {
+        Statement statement;
+        statement = connection.createStatement();
+        statement.execute(query);
+        System.out.println(statement.getResultSet());
+    }
 }
