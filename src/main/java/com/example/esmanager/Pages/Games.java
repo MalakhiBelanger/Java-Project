@@ -4,6 +4,7 @@ package com.example.esmanager.Pages;
 import com.example.esmanager.DatabaseStuff.Database;
 import com.example.esmanager.Main;
 import com.example.esmanager.Pages.DataStuff.Game;
+import com.example.esmanager.Pages.DataStuff.Match;
 import com.example.esmanager.UserStuff.CurrentUser;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -20,6 +21,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import static com.example.esmanager.DatabaseStuff.DBConst.*;
 
@@ -46,17 +48,21 @@ public class Games extends VBox {
         TableColumn<Game, String> titleCol = new TableColumn<>("Game Title");
         TableColumn<Game, Integer> idCol = new TableColumn<>("ID");
         TableColumn<Game, Integer> matchesCol = new TableColumn<>("Matches Played");
+        TableColumn<Game, Integer> gamesWon  = new TableColumn<>("Games Won");
+        TableColumn<Game, Integer> gamesLost = new TableColumn<>("Games Lost");
 
         titleCol.setCellValueFactory(c -> c.getValue().titleProperty());
         idCol.setCellValueFactory(c -> c.getValue().idProperty().asObject());
         matchesCol.setCellValueFactory(c -> c.getValue().matchesPlayedProperty().asObject());
+        gamesWon.setCellValueFactory(c -> c.getValue().matchesWonProperty().asObject());
+        gamesLost.setCellValueFactory(c -> c.getValue().matchesLostProperty().asObject());
 
 
         titleCol.setPrefWidth(300);
         idCol.setPrefWidth(300);
         matchesCol.setPrefWidth(300);
 
-        this.table.getColumns().addAll(titleCol, idCol, matchesCol);
+        this.table.getColumns().addAll(titleCol, idCol, matchesCol, gamesWon, gamesLost);
 
         this.gameCovers = new TilePane();
         this.gameCovers.setPadding(new Insets(10));
@@ -190,6 +196,7 @@ public class Games extends VBox {
 
         String sql =
                 "SELECT g." + GAME_COLUMN_ID + ", g." + GAME_COLUMN_TITLE + ", g." + GAME_COLUMN_IMAGE_PATH + ", COUNT(m." + MATCH_COLUMN_ID + ") AS matches_count " +
+                        ", COUNT(CASE WHEN m." + MATCH_COLUMN_WON + " THEN 1 END) AS matches_won " +
                         "FROM " + TABLE_GAME + " g " +
                         "LEFT JOIN " + TABLE_MATCH + " m ON g." + GAME_COLUMN_ID + " = m." + GAME_COLUMN_ID + " " +
                         "WHERE g." + COLUMN_ID + " = ? " +
@@ -202,10 +209,17 @@ public class Games extends VBox {
             ResultSet rs = statement.executeQuery();
 
             while (rs.next()) {
+                ArrayList<Match> matches = new ArrayList<>();
+                int played = rs.getInt("matches_count");
+                int won = rs.getInt("matches_won");
+                int loss = played - won;
                 Game game = new Game(
                         rs.getInt(GAME_COLUMN_ID),
                         rs.getString(GAME_COLUMN_TITLE),
-                        rs.getString(GAME_COLUMN_IMAGE_PATH)
+                        rs.getString(GAME_COLUMN_IMAGE_PATH),
+                        played,
+                        won,
+                        loss
                 );
 
                 // game.setMatchesPlayed(countMatches(game.getId()));
