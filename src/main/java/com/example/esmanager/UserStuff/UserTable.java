@@ -1,9 +1,11 @@
-package com.example.esmanager;
+package com.example.esmanager.UserStuff;
+
+import com.example.esmanager.DatabaseStuff.Database;
 
 import java.sql.ResultSet;
 import java.sql.Statement;
 
-import static com.example.esmanager.DBConst.*;
+import static com.example.esmanager.DatabaseStuff.DBConst.*;
 
 public class UserTable {
     private static UserTable instance;
@@ -29,7 +31,7 @@ public class UserTable {
         }
         return instance;
     }
-    public boolean createUser(String id, String pass) {
+    public boolean createUser(String id, String pass, String email) {
         String check = "SELECT * FROM " + TABLE_USER + " WHERE " + COLUMN_ID + " = '" + id + "';";
         try {
             Statement getUser = db.getConnection().createStatement();
@@ -38,18 +40,12 @@ public class UserTable {
                 return false;
             }
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-        String query = "INSERT INTO " + TABLE_USER + " VALUES ('" + id + "', '" + pass + "');";
-        try {
+            String query = "INSERT INTO " + TABLE_USER + " VALUES ('" + id + "', '" + pass + "', '" + email + "');";
+
             Statement createUser = db.getConnection().createStatement();
-            boolean user = createUser.execute(query);
-            if(user) {
-                System.out.println("User created");
-                return true;
-            }
+            int rows = createUser.executeUpdate(query);
+
+            return rows > 0;
         } catch (Exception e) {
             e.printStackTrace();
         }

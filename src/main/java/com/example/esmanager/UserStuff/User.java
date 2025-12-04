@@ -1,4 +1,4 @@
-package com.example.esmanager;
+package com.example.esmanager.UserStuff;
 
 public class User {
     private String id;

@@ -1,0 +1,164 @@
+/* ----------------------------------------------------
+   GLOBAL VARIABLES / THEME COLORS
+---------------------------------------------------- */
+ * {
+     /*cool salmon colour*/
+    -fx-primary: #ec625c;
+
+
+    -fx-primary-dark: #c44f49;
+    -fx-primary-light: #ff847f;
+    -fx-accent: #4a4a4a;
+
+
+    -fx-bg: #f7f7f7;
+    -fx-surface: #ffffff;
+    -fx-surface-dark: #f0f0f0;
+    -fx-border: #d9d9d9;
+    -fx-text: #2b2b2b;
+    -fx-text-light: #fafafa;
+
+
+    -fx-shadow: rgba(0,0,0,0.15);
+}
+
+/*toppane*/
+#title-bar {
+    -fx-background-color: -fx-primary;
+    -fx-padding: 25px;
+    -fx-alignment: center-left;
+    -fx-spacing: 15px;
+    -fx-effect: dropshadow(one-pass-box, -fx-shadow, 10, 0, 0, 3);
+}
+
+#title-bar Text {
+    -fx-fill: white;
+    -fx-font-size: 42px;
+    -fx-font-weight: bold;
+}
+
+/*Buttons*/
+.button {
+    -fx-background-radius: 12px;
+    -fx-background-color: -fx-primary;
+    -fx-text-fill: -fx-text-light;
+    -fx-font-size: 15px;
+    -fx-padding: 10px 20px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(one-pass-box, -fx-shadow, 4, 0, 0, 2);
+
+    -fx-transition: -fx-background-color 0.22s ease, -fx-translate-y 0.22s ease,
+    -fx-scale-x 0.20s ease, -fx-scale-y 0.20s ease, -fx-effect 0.25s ease;
+}
+
+.button:hover {
+    -fx-background-color: -fx-primary-light;
+    -fx-translate-y: -2px;
+}
+
+.button:pressed {
+    -fx-background-color: -fx-primary-dark;
+    -fx-translate-y: 1px;
+    -fx-scale-x: 0.97;
+    -fx-scale-y: 0.97;
+}
+
+.button:pressed {
+    -fx-background-insets: 0, 0;
+    -fx-background-radius: 12px;
+
+    -fx-background-color:
+            radial-gradient(
+                    center 50% 50%,
+                    radius 75%,
+                    rgba(255,255,255,0.25),
+                    rgba(255,255,255,0.00)
+            ),
+            -fx-primary-dark;
+}
+
+.button:armed {
+    -fx-transition: all 0.18s ease-out;
+}
+
+/*login/register toggle*/
+.toggle-bar .button {
+    -fx-background-color: -fx-accent;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.toggle-bar .button:hover {
+    -fx-background-color: -fx-primary;
+}
+
+/*Form textfields*/
+.text-field,
+.password-field {
+    -fx-background-color: -fx-surface;
+    -fx-background-radius: 8px;
+    -fx-border-color: -fx-border;
+    -fx-border-radius: 8px;
+    -fx-padding: 8px 12px;
+    -fx-font-size: 15px;
+}
+
+.text-field:focused,
+.password-field:focused {
+    -fx-border-color: -fx-primary;
+    -fx-background-color: -fx-surface-dark;
+}
+
+/*labels*/
+.label {
+    -fx-text-fill: -fx-text;
+    -fx-font-size: 30px;
+    -fx-font-weight: bold;
+}
+
+.homepage-welcome {
+    -fx-font-size: 100px;
+}
+
+.homepage-instructions {
+    -fx-font-size: 40px;
+}
+
+/*login*/
+.login-page, .register-page {
+    -fx-padding: 40px;
+    -fx-spacing: 15px;
+    -fx-alignment: center;
+}
+
+/*menu*/
+.menu-bar {
+    -fx-background-color: -fx-primary;
+    -fx-padding: 10px;
+}
+
+.menu {
+    -fx-text-fill: white;
+}
+
+.menu-bar .label {
+    -fx-text-fill: white;
+}
+
+/*Logo*/
+.splash-logo {
+    -fx-effect: dropshadow(one-pass-box, rgba(0,0,0,0.2), 15, 0, 0, 5);
+}
+
+/*pages*/
+
+.page {
+    -fx-padding: 40px;
+    -fx-spacing: 20px;
+    -fx-background-color: -fx-bg;
+}
+
+.stat-widget {
+    -fx-font-size: 25;
+}
+

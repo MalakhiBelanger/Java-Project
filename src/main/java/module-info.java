@@ -9,4 +9,8 @@ module com.example.esmanager {
     exports com.example.esmanager;
     exports com.example.esmanager.Pages;
     opens com.example.esmanager.Pages to javafx.fxml;
+    exports com.example.esmanager.UserStuff;
+    opens com.example.esmanager.UserStuff to javafx.fxml;
+    exports com.example.esmanager.DatabaseStuff;
+    opens com.example.esmanager.DatabaseStuff to javafx.fxml;
 }

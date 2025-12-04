@@ -1,12 +1,12 @@
 package com.example.esmanager;
 
+import com.example.esmanager.UserStuff.CurrentUser;
+import com.example.esmanager.UserStuff.User;
+import com.example.esmanager.UserStuff.UserTable;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 
 public class Login extends BorderPane {
     private VBox loginPage;
@@ -18,16 +18,17 @@ public class Login extends BorderPane {
 
     private TextField registerUsername;
     private PasswordField registerPassword;
-    private Runnable onRegisterSuccess;
+    private TextField registerEmail;
 
     public Login() {
-        this.setBackground(new Background(new BackgroundFill(Color.GRAY, null, null)));
-
         addLoginPage();
         addRegPage();
 
         setCenter(loginPage);
         setTop(addToggleBar());
+
+        loginPage.getStyleClass().add("login-page");
+        regPage.getStyleClass().add("register-page");
 
     }
 
@@ -47,6 +48,7 @@ public class Login extends BorderPane {
 
         HBox toggleBar = new HBox(loginButton, regButton);
         toggleBar.setAlignment(Pos.CENTER);
+        toggleBar.getStyleClass().add("toggle-bar");
 
         return toggleBar;
     }
@@ -55,9 +57,11 @@ public class Login extends BorderPane {
         Label title = new Label("Login");
 
         loginUsername = new TextField();
+        loginUsername.setMaxWidth(200);
         loginUsername.setPromptText("Enter Username");
 
         loginPassword = new PasswordField();
+        loginPassword.setMaxWidth(200);
         loginPassword.setPromptText("Enter Password");
 
         Button submit = new Button("Login");
@@ -68,30 +72,32 @@ public class Login extends BorderPane {
         });
 
         loginPage = new VBox(title, loginUsername, loginPassword, submit);
-        loginPage.setAlignment(Pos.CENTER);
+        loginPage.setAlignment(Pos.TOP_CENTER);
     }
 
     private void addRegPage(){
         Label title = new Label("Register");
 
-        TextField email = new TextField();
-        email.setPromptText("Enter Email");
+        registerEmail = new TextField();
+        registerEmail.setMaxWidth(200);
+        registerEmail.setPromptText("Enter Email");
 
-        TextField username = new TextField();
-        username.setPromptText("Enter Username");
+        registerUsername = new TextField();
+        registerUsername.setMaxWidth(200);
+        registerUsername.setPromptText("Enter Username");
 
-        PasswordField password = new PasswordField();
-        password.setPromptText("Enter Password");
+        registerPassword = new PasswordField();
+        registerPassword.setMaxWidth(200);
+        registerPassword.setPromptText("Enter Password");
 
         Button submit = new Button("Create Account");
         submit.setPrefWidth(150);
 
 
         //Submit the users info here and run a check seeing if the user already exists or not
-        submit.setOnAction(e->{
-        });
+        submit.setOnAction(e-> userRegister());
 
-        regPage = new VBox(title,email,username,password,submit);
+        regPage = new VBox(title,registerEmail,registerUsername,registerPassword,submit);
         regPage.setAlignment(Pos.CENTER);
     }
 
@@ -102,14 +108,50 @@ public class Login extends BorderPane {
     public void userLogin(){
         String username = loginUsername.getText().trim();
         String pass = loginPassword.getText();
+
         UserTable userTable = UserTable.getInstance();
-        userTable.getUser(username, pass);
-        if(userTable.getUser(username, pass) != null) {
+        User loggedInUser = userTable.getUser(username,pass);
+
+        if(loggedInUser != null) {
+            CurrentUser.login(loggedInUser.getId());
             if(onLoginSuccess != null) {
                 onLoginSuccess.run();
             }
         } else {
             // Show something something username or password is incorrect here
+            Alert invalidUser = new Alert(Alert.AlertType.INFORMATION);
+            invalidUser.setTitle("Invalid User");
+            invalidUser.setHeaderText("Invalid User");
+            invalidUser.showAndWait();
+
+        }
+    }
+
+    private void userRegister(){
+        String username = registerUsername.getText().trim();
+        String pass = registerPassword.getText().trim();
+        String email = registerEmail.getText().trim();
+
+        if(username.isEmpty() || pass.isEmpty()){
+            Alert invalidUser = new Alert(Alert.AlertType.INFORMATION);
+            invalidUser.setTitle("Invalid User");
+            invalidUser.showAndWait();
+            return;
+        }
+
+        UserTable userTable = UserTable.getInstance();
+        boolean created = userTable.createUser(username, pass, email);
+        if(!created){
+            Alert alreadyExists = new Alert(Alert.AlertType.INFORMATION);
+            alreadyExists.setTitle("User already exists");
+            alreadyExists.setHeaderText("User already exists");
+            alreadyExists.showAndWait();
+        }else{
+            Alert success = new Alert(Alert.AlertType.INFORMATION);
+            success.setTitle("Success");
+            success.setHeaderText("Success");
+            success.showAndWait();
+
         }
     }
 

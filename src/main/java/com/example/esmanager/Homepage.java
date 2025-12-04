@@ -4,6 +4,7 @@ import com.example.esmanager.Pages.Finances;
 import com.example.esmanager.Pages.Games;
 import com.example.esmanager.Pages.Players;
 import com.example.esmanager.Pages.Stats;
+import com.example.esmanager.UserStuff.CurrentUser;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
@@ -12,6 +13,8 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 
 public class Homepage extends BorderPane {
     private BorderPane root;
@@ -67,16 +70,22 @@ public class Homepage extends BorderPane {
         sidebar.prefWidthProperty().bind(this.widthProperty().multiply(0.15));
         sidebar.setBorder(new Border(new BorderStroke(Color.BLACK,BorderStrokeStyle.SOLID,CornerRadii.EMPTY, new BorderWidths(1))));
 
-        //You can add values under here involving the database tables.
-        Label totalPlayers = new Label("Total Players: ");
-        Label upcomingTournaments = new Label("Upcoming Tournaments");
-        Label sponsorArea = new Label("Sponsors");
 
-        overview.getChildren().addAll(
-          totalPlayers,
-          upcomingTournaments,
-          sponsorArea
-        );
+        Label welcomeLabel = new Label("Welcome " + CurrentUser.getUserId());
+        welcomeLabel.setFont(Font.font("Roboto"));
+        welcomeLabel.setTextFill(Color.web("#ec625c"));
+        welcomeLabel.getStyleClass().add("homepage-welcome");
+
+        Label instructionLabel = new Label("Use the sidebar to manage your team's players, games, matches, and finances");
+        instructionLabel.setFont(Font.font("Roboto"));
+        instructionLabel.setWrapText(true);
+        instructionLabel.getStyleClass().add("homepage-instruction");
+
+        instructionLabel.setPadding(new Insets(20));
+        welcomeLabel.setPadding(new Insets(30));
+
+        overview.getChildren().addAll(welcomeLabel, instructionLabel);
+
 
 
         viewHome.setOnAction(e->{
@@ -110,6 +119,7 @@ public class Homepage extends BorderPane {
         viewStats.setOnAction(e->{
             if(this.getCenter()!=statsPage){
                 this.setCenter(statsPage);
+                statsPage.loadStatsData();
                 Main.title.setText("Stats");
             }
         });
@@ -137,6 +147,8 @@ public class Homepage extends BorderPane {
                  =
                  =
                  =*/
+                    CurrentUser.logout();
+                    System.out.println(CurrentUser.getUserId());
 
                 } else {
 
