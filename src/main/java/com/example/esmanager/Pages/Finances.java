@@ -9,17 +9,16 @@ import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 import static com.example.esmanager.DatabaseStuff.DBConst.*;
 
 public class Finances extends VBox {
     private TableView<Finance> table;
     private ObservableList<Finance> data;
+    private HBox profits;
 
 
     public Finances() {
@@ -48,8 +47,11 @@ public class Finances extends VBox {
         date.setCellValueFactory(c -> c.getValue().dateProperty());
 
         this.table.getColumns().addAll(cat, amount, date);
+        Text text = new Text("Total profits/losses: " + totalFinances() + "$");
+        profits = new HBox(text);
+        HBox total = new HBox(profits);
 
-        this.getChildren().addAll(crud, table);
+        this.getChildren().addAll(crud, table, total);
 
         this.setSpacing(10);
         this.setPadding(new Insets(10));
@@ -218,6 +220,10 @@ public class Finances extends VBox {
             System.err.println("Database error loading finances: " + e.getMessage());
             e.printStackTrace();
         }
+        Text text = new Text("Total profits/losses: " + totalFinances() + "$");
+        profits.getChildren().clear();
+        profits.getChildren().add(text);
+
     }
 
     private boolean addFinance(Finance finance) {
@@ -289,6 +295,25 @@ public class Finances extends VBox {
             System.err.println("Database error deleting finance: " + e.getMessage());
             e.printStackTrace();
             return false;
+        }
+    }
+
+    private double totalFinances() {
+        String sql = "SELECT SUM(" + FINANCE_COLUMN_AMOUNT + ") FROM " + TABLE_FINANCE;
+        try (Connection conn = Database.getInstance().getConnection();
+             PreparedStatement statement = conn.prepareStatement(sql)) {
+            ResultSet rs = statement.executeQuery();
+            if(rs.next()) {
+                return rs.getDouble(1);
+            } else {
+                return 0;
+            }
+
+
+        } catch (SQLException e) {
+            System.err.println("Database error updating finance: " + e.getMessage());
+            e.printStackTrace();
+            return 0;
         }
     }
 }
