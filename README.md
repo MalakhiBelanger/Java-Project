@@ -24,7 +24,10 @@ User can add finances that they might forget so they are reminded to pay them
 (Scrapped idea was to pay players through the finances page and the sum will be shown in the players net income section)  
 
 ## Stats  
-Simple widget display showing the users teams overall data
+Simple widget display showing the users teams overall data  
+
+## Matches Display  
+Show individual match instances that players participated in, shows the stats of the game including score, game type, and players.  
 
 # SCRAPPED
 ## Different utility  
@@ -34,6 +37,5 @@ users stats and data in the games that they play, and can sign up
 or change games they participate in (Notifies manager first
 for confirmation).
 
-## Matches Display  
-Show individual match instances that players participated in, shows the stats of the game including score, game type, and players.  
+
 
