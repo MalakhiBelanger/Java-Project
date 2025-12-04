@@ -6,6 +6,7 @@ import com.example.esmanager.Main;
 import com.example.esmanager.Pages.DataStuff.Game;
 import com.example.esmanager.Pages.DataStuff.Match;
 import com.example.esmanager.UserStuff.CurrentUser;
+import com.example.esmanager.UserStuff.User;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -39,8 +40,9 @@ public class Games extends VBox {
         Button create = new Button("Add Game");
         Button delete = new Button("Delete Game");
         Button reload = new Button("Reload Table");
+        Button recordMatch =  new Button("Record Match");
 
-        HBox crud = new HBox(10,create,delete,reload);
+        HBox crud = new HBox(10,create,delete,reload, recordMatch);
 
 
         this.table = new TableView<>();
@@ -61,8 +63,10 @@ public class Games extends VBox {
         titleCol.setPrefWidth(300);
         idCol.setPrefWidth(300);
         matchesCol.setPrefWidth(300);
+        gamesWon.setPrefWidth(300);
+        gamesLost.setPrefWidth(300);
 
-        this.table.getColumns().addAll(titleCol, idCol, matchesCol, gamesWon, gamesLost);
+        this.table.getColumns().addAll(titleCol, matchesCol, gamesWon, gamesLost);
 
         this.gameCovers = new TilePane();
         this.gameCovers.setPadding(new Insets(10));
@@ -75,6 +79,7 @@ public class Games extends VBox {
         reload.setOnAction(e -> loadData());
         create.setOnAction(e -> handleCreate());
         delete.setOnAction(e -> handleDelete());
+        recordMatch.setOnAction(e-> handleRecord());
 
         loadData();
     }
@@ -123,6 +128,38 @@ public class Games extends VBox {
         return gameCover;
     }
 
+    private void handleRecord() {
+        Game selected = table.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            new Alert(Alert.AlertType.WARNING, "Please select a game to record a match").showAndWait();
+            return;
+        }
+
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("Match Record");
+        dialog.setHeaderText("Enter your teams score");
+
+        dialog.showAndWait().ifPresent( scoreA -> {
+            int score = Integer.parseInt(scoreA);
+
+
+            TextInputDialog dialog2 = new TextInputDialog();
+            dialog2.setTitle("Match Record");
+            dialog2.setHeaderText("Enter opposing teams score");
+
+            dialog2.showAndWait().ifPresent( scoreB -> {
+                int score2 =  Integer.parseInt(scoreB);
+                boolean matchWon = false;
+                if(score>score2){
+                    matchWon = true;
+                }
+
+                recordMatch(matchWon, score, score2, selected.getId());
+                loadData();
+            });
+        });
+    }
+
 
 
     private void handleCreate() {
@@ -154,6 +191,7 @@ public class Games extends VBox {
                     new Alert(Alert.AlertType.ERROR, "Failed to save game to the database.").showAndWait();
                 }
             });
+
         });
     }
 
@@ -178,6 +216,41 @@ public class Games extends VBox {
                 }
             }
         });
+    }
+
+
+    private boolean recordMatch(boolean won, int scoreA, int scoreB, int gameId) {
+        String userId = CurrentUser.getUserId();
+        if (userId == null) {
+            new Alert(Alert.AlertType.ERROR, "Login required to add match").showAndWait();
+            return false;
+        }
+
+        String sql = "INSERT INTO " + TABLE_MATCH + "(" +MATCH_COLUMN_ID + "," + MATCH_COLUMN_WON + "," + MATCH_COLUMN_SCORE_A + "," + MATCH_COLUMN_SCORE_B + "," + COLUMN_ID + "," + GAME_COLUMN_ID +
+                ") VALUES (0,?,?,?,?,?);";
+                /*"0," +
+                " TRUE or FALSE," +
+                " int," +
+                " int," +
+                " currentUser.id," +
+                " selectedGame.id);";*/
+
+        try (Connection conn = Database.getInstance().getConnection();
+             PreparedStatement statement = conn.prepareStatement(sql)) {
+
+            statement.setBoolean(1, won);
+            statement.setInt(2, scoreA);
+            statement.setInt(3, scoreB);
+            statement.setString(4, userId);
+            statement.setInt(5, gameId);
+
+            return statement.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            System.err.println("Database error adding game: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
     }
 
 
